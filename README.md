@@ -27,4 +27,4 @@ The page uses relative paths, so it works at either a user-site root or a projec
 - `assets/videos/*.mp4`: compressed, representative clips from the five method folders under `mobile_video`; the page labels them as selected trials. The quantitative results summarize all ten trials per method.
 - `assets/images/poster-*.png`: still frames for those clips.
 
-The raw videos remain outside this folder. The five compressed clips are about 32 MB in total.
+The raw videos remain outside this folder. The five compressed clips are encoded at 1080p (H.264, HDR converted to SDR with avconvert) and about 33 MB in total.
