@@ -195,12 +195,17 @@
         <div class="container">
           <h2 id="videos-title">Robot experiment videos</h2>
           <!-- <p>Selected trials from the physical evaluation. Trial-level outcomes can differ from the aggregate results in the table.</p> -->
-          <figure class="featured-video video-item"><video controls playsinline preload="metadata" poster="assets/images/poster-dexdice.jpg" aria-label="DexDICE selected real-robot navigation trial"><source src="assets/videos/dexdice.mp4" type="video/mp4" />Your browser does not support embedded video.</video><figcaption>DexDICE (ours)</figcaption></figure>
+          <div class="video-controls">
+            <button type="button" class="vc-btn" id="vc-toggle" aria-pressed="false">Play</button>
+            <button type="button" class="vc-btn" id="vc-restart">Restart</button>
+            <span class="vc-note">All clips start at departure and play together. They restart after the longest clip ends.</span>
+          </div>
+          <figure class="featured-video video-item"><video class="sync-video" muted playsinline preload="metadata" poster="assets/images/poster-dexdice.jpg" aria-label="DexDICE selected real-robot navigation trial"><source src="assets/videos/dexdice.mp4" type="video/mp4" />Your browser does not support embedded video.</video><figcaption>DexDICE (ours)</figcaption></figure>
           <div class="video-grid">
-            <figure class="video-item"><video controls playsinline preload="none" poster="assets/images/poster-demodice-u.jpg" aria-label="DemoDICE-U selected robot trial"><source src="assets/videos/demodice-u.mp4" type="video/mp4" /></video><figcaption>DemoDICE-U</figcaption></figure>
-            <figure class="video-item"><video controls playsinline preload="none" poster="assets/images/poster-bc-safe.jpg" aria-label="BC-Safe selected robot trial"><source src="assets/videos/bc-safe.mp4" type="video/mp4" /></video><figcaption>BC-Safe</figcaption></figure>
-            <figure class="video-item"><video controls playsinline preload="none" poster="assets/images/poster-fisor-il.jpg" aria-label="FISOR-IL selected robot trial"><source src="assets/videos/fisor-il.mp4" type="video/mp4" /></video><figcaption>FISOR-IL</figcaption></figure>
-            <figure class="video-item"><video controls playsinline preload="none" poster="assets/images/poster-fbc.jpg" aria-label="FBC selected robot trial"><source src="assets/videos/fbc.mp4" type="video/mp4" /></video><figcaption>FBC</figcaption></figure>
+            <figure class="video-item"><video class="sync-video" muted playsinline preload="metadata" poster="assets/images/poster-demodice-u.jpg" aria-label="DemoDICE-U selected robot trial"><source src="assets/videos/demodice-u.mp4" type="video/mp4" /></video><figcaption>DemoDICE-U</figcaption></figure>
+            <figure class="video-item"><video class="sync-video" muted playsinline preload="metadata" poster="assets/images/poster-bc-safe.jpg" aria-label="BC-Safe selected robot trial"><source src="assets/videos/bc-safe.mp4" type="video/mp4" /></video><figcaption>BC-Safe</figcaption></figure>
+            <figure class="video-item"><video class="sync-video" muted playsinline preload="metadata" poster="assets/images/poster-fisor-il.jpg" aria-label="FISOR-IL selected robot trial"><source src="assets/videos/fisor-il.mp4" type="video/mp4" /></video><figcaption>FISOR-IL</figcaption></figure>
+            <figure class="video-item"><video class="sync-video" muted playsinline preload="metadata" poster="assets/images/poster-fbc.jpg" aria-label="FBC selected robot trial"><source src="assets/videos/fbc.mp4" type="video/mp4" /></video><figcaption>FBC</figcaption></figure>
           </div>
         </div>
       </section>
@@ -226,5 +231,54 @@
     </main>
 
     <footer class="footer"><div class="container"><span>DexDICE · NeurIPS 2026</span><a href="#top">Back to top ↑</a></div></footer>
+    <script>
+      (function () {
+        var section = document.getElementById('videos');
+        var videos = Array.prototype.slice.call(document.querySelectorAll('.sync-video'));
+        var toggle = document.getElementById('vc-toggle');
+        var restartBtn = document.getElementById('vc-restart');
+        if (!section || !videos.length) return;
+        var reduceMotion = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+        var userPaused = reduceMotion, inView = false, playing = false, loopTimer = null;
+
+        function setLabel() { toggle.textContent = playing ? 'Pause' : 'Play'; toggle.setAttribute('aria-pressed', playing ? 'true' : 'false'); }
+        function ready(v) {
+          return v.readyState >= 3 ? Promise.resolve() : new Promise(function (res) {
+            v.addEventListener('canplay', res, { once: true }); if (v.preload !== 'auto') { v.preload = 'auto'; v.load(); }
+          });
+        }
+        function playAll(fromStart) {
+          clearTimeout(loopTimer);
+          return Promise.all(videos.map(ready)).then(function () {
+            videos.forEach(function (v) { if (fromStart || v.ended) v.currentTime = 0; });
+            return Promise.all(videos.map(function (v) { return v.play(); }));
+          }).then(function () { playing = true; setLabel(); })
+            .catch(function () { playing = false; userPaused = true; setLabel(); });
+        }
+        function pauseAll() { clearTimeout(loopTimer); videos.forEach(function (v) { v.pause(); }); playing = false; setLabel(); }
+
+        videos.forEach(function (v) {
+          v.addEventListener('ended', function () {
+            if (videos.every(function (x) { return x.ended; })) {
+              loopTimer = setTimeout(function () { if (inView && !userPaused) playAll(true); }, 1000);
+            }
+          });
+          v.addEventListener('click', function () { toggle.click(); });
+        });
+        toggle.addEventListener('click', function () {
+          if (playing) { userPaused = true; pauseAll(); } else { userPaused = false; playAll(videos.every(function (x) { return x.ended; })); }
+        });
+        restartBtn.addEventListener('click', function () { userPaused = false; playAll(true); });
+
+        if ('IntersectionObserver' in window) {
+          new IntersectionObserver(function (entries) {
+            inView = entries[0].isIntersecting;
+            if (inView && !userPaused && !playing) playAll(false);
+            else if (!inView && playing) pauseAll();
+          }, { threshold: 0.25 }).observe(section);
+        }
+        setLabel();
+      })();
+    </script>
   </body>
 </html>

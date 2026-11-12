@@ -27,4 +27,12 @@ The page uses relative paths, so it works at either a user-site root or a projec
 - `assets/videos/*.mp4`: compressed, representative clips from the five method folders under `mobile_video`; the page labels them as selected trials. The quantitative results summarize all ten trials per method.
 - `assets/images/poster-*.png`: still frames for those clips.
 
-The raw videos remain outside this folder. The five compressed clips are encoded at 1080p (H.264, HDR converted to SDR with avconvert) and about 33 MB in total.
+The raw videos remain outside this folder. Each clip is trimmed from just before departure to just after arrival, encoded at 1080p (H.264, HDR converted to SDR with avconvert), and the five clips total about 27 MB. On the page, all clips start together when the section scrolls into view and restart together 1 s after the longest clip ends.
+
+| Clip | Source (`mobile_video/`) | Trim window (s) |
+|---|---|---|
+| dexdice.mp4 | DexDICE/IMG_1013.MOV | 3.6 to 19.8 |
+| demodice-u.mp4 | DemoDICE-U/IMG_1029.MOV | 1.5 to 18.2 |
+| bc-safe.mp4 | BC-Safe/IMG_1054.MOV | 3.0 to 35.2 |
+| fisor-il.mp4 | FISOR-IL/IMG_1039.MOV | 4.7 to 22.1 |
+| fbc.mp4 | FBC/IMG_1047.MOV | 1.4 to 16.1 |
