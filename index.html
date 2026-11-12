@@ -1,0 +1,230 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="description" content="DexDICE learns safe, high-performing policies from separate safe and performant demonstrations without reward or cost labels." />
+    <meta property="og:title" content="DexDICE — Dual-Expert Offline Imitation Learning" />
+    <meta property="og:description" content="Reconciling safety and performance through safe-support-constrained offline imitation learning. NeurIPS 2026." />
+    <meta property="og:type" content="website" />
+    <meta property="og:url" content="https://seokinseo.github.io/dexdice-site/" />
+    <meta property="og:image" content="https://seokinseo.github.io/dexdice-site/assets/images/poster-dexdice.png" />
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="theme-color" content="#ffffff" />
+    <title>DexDICE — NeurIPS 2026</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=IBM+Plex+Sans:wght@500;600;700&display=swap" rel="stylesheet" />
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/katex.min.css" />
+    <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/katex.min.js"></script>
+    <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/contrib/auto-render.min.js" onload="renderMathInElement(document.body,{delimiters:[{left:'\\[',right:'\\]',display:true},{left:'\\(',right:'\\)',display:false}]});"></script>
+    <link rel="stylesheet" href="styles.css" />
+  </head>
+  <body>
+    <a class="skip-link" href="#content">Skip to content</a>
+    <header class="site-header">
+      <nav class="container nav" aria-label="Main navigation">
+        <a class="wordmark" href="#top">DexDICE</a>
+        <div class="nav-links">
+          <a href="#method">Method</a>
+          <a href="#experiments">Experiments</a>
+          <a href="#videos">Videos</a>
+          <a href="https://arxiv.org/pdf/2611.09433" target="_blank" rel="noopener noreferrer">Paper ↗</a>
+          <a href="https://github.com/tzs930/dexdice" target="_blank" rel="noopener noreferrer">Code ↗</a>
+        </div>
+      </nav>
+    </header>
+
+    <main id="content">
+      <section class="hero container" id="top" aria-labelledby="title">
+        <p class="venue">NeurIPS 2026</p>
+        <h1 id="title">DexDICE: Reconciling Safety and Performance via Dual-Expert Offline Imitation Learning</h1>
+        <p class="authors"><span class="author"><a href="https://seokinseo.github.io/" target="_blank" rel="noopener noreferrer">Seokin Seo</a><sup>1,2</sup></span> · <span class="author"><a href="https://orcid.org/0000-0001-5316-3506" target="_blank" rel="noopener noreferrer">Sung Kuk Shyn</a><sup>2</sup></span> · <span class="author"><a href="https://kr.linkedin.com/in/minji-seo-72261537a" target="_blank" rel="noopener noreferrer">Minji Seo</a><sup>1,3</sup></span> · <span class="author"><a href="https://sites.google.com/view/kist-arc/home/people/pi-profile?authuser=0" target="_blank" rel="noopener noreferrer">Yisoo Lee</a><sup>1</sup></span> · <span class="author"><a href="https://www.jmlee.kr/" target="_blank" rel="noopener noreferrer">Jongmin Lee</a><sup>4</sup></span> · <span class="author"><a href="https://sites.google.com/view/hongseokyang/home" target="_blank" rel="noopener noreferrer">Hongseok Yang</a><sup>5</sup></span> · <span class="author"><a href="https://ailab.kaist.ac.kr/people/kekim" target="_blank" rel="noopener noreferrer">Kee-Eung Kim</a><sup>2</sup></span></p>
+        <div class="affiliations" aria-label="Author affiliations">
+          <span><sup>1</sup> Korea Institute of Science and Technology (KIST)</span>
+          <span><sup>2</sup> Korea Advanced Institute of Science and Technology (KAIST)</span>
+          <span><sup>3</sup> Hyundai Motor Company</span>
+          <span><sup>4</sup> Yonsei University</span>
+          <span><sup>5</sup> Korea Institute for Advanced Study (KIAS)</span>
+        </div>
+        <div class="hero-links">
+          <a class="pill pill-primary" href="https://arxiv.org/pdf/2611.09433" target="_blank" rel="noopener noreferrer">Paper PDF ↗</a>
+          <a class="pill" href="https://github.com/tzs930/dexdice" target="_blank" rel="noopener noreferrer">Code ↗</a>
+          <a class="pill" href="#videos">Videos ↓</a>
+        </div>
+      </section>
+
+      <figure class="teaser container">
+        <img src="assets/images/method-overview.png" alt="Paper illustration of safe and performant demonstrations and the safe-support-constrained policy." width="1600" height="381" fetchpriority="high" />
+        <figcaption>DexDICE learns high-performing behavior within the estimated support of safe demonstrations.</figcaption>
+      </figure>
+
+      <!-- <section class="highlights container" aria-label="Results at a glance">
+        <div><strong>31 / 38</strong><span>DSRL tasks meeting the cost constraint at fixed κ = 0.01</span></div>
+        <div><strong>19</strong><span>Tasks with the best safe return, including ties within one standard error</span></div>
+        <div><strong>10 / 10</strong><span>Successful real-robot trials with zero measured safety violations</span></div>
+      </section> -->
+
+      <section class="section container" id="abstract" aria-labelledby="abstract-title">
+        <h2 id="abstract-title">Abstract</h2>
+        <p>Safe offline imitation learning often requires either a hand-designed cost function or demonstrations that are both safe and high-performing. DexDICE instead learns from two complementary sources: safe demonstrations that may be suboptimal and performant demonstrations that may violate safety guidelines. It aligns with performant behavior while constraining the policy to the estimated support of safe behavior. The paper analyzes safety for the ideal support-constrained solution and evaluates the practical method on a re-curated DSRL benchmark and a physical mobile-robot navigation task trained from human demonstrations.</p>
+      </section>
+
+      <section class="section section-soft" id="method" aria-labelledby="method-title">
+        <div class="container">
+          <h2 id="method-title">Method</h2>
+          <div class="method-body">
+            <p>DexDICE learns from safe demonstrations \(\mathcal{D}_{\mathrm{S}}\), performant demonstrations \(\mathcal{D}_{\mathrm{P}}\), and a larger unlabeled dataset \(\mathcal{D}_{\mathrm{U}}\), with state-action distributions \(d_{\mathrm{S}}\), \(d_{\mathrm{P}}\), and \(d_{\mathrm{U}}\).</p>
+
+            <h3>Why a support constraint, not distribution matching</h3>
+            <p>A divergence regularizer such as \(D_{\mathrm{KL}}(d \,\|\, d_{\mathrm{S}})\) pulls the policy toward the safe expert, including its suboptimality. DexDICE uses only the support of the safe demonstrations: it restricts <em>where</em> the policy can act, not <em>how often</em>.</p>
+            <figure class="math-figure">
+              <div class="eq">\[ \min_{\pi} \; \mathbb{D}\big(d_\pi \,\|\, d_{\mathrm{P}}\big) \quad \text{s.t.} \quad \mathrm{supp}(d_\pi) \subseteq \mathrm{supp}(d_{\mathrm{S}}) \]</div>
+              <figcaption>Match the performant distribution \(d_{\mathrm{P}}\) while staying inside the support of the safe distribution \(d_{\mathrm{S}}\).</figcaption>
+            </figure>
+
+            <h3>Support-constrained DICE</h3>
+            <p><strong>DICE</strong> (stationary DIstribution Correction Estimation) casts policy optimization as a convex problem over stationary state-action distributions \(d\) rather than policies. It learns the correction ratio \(w(s,a) := d(s,a)/d_{\mathrm{U}}(s,a)\), which reweights the offline data toward the target distribution, so training needs only samples from a static dataset and no environment interaction.</p>
+            <p>DexDICE adds the safe-support constraint to this framework. Because \(d\) sums to one, the constraint is a single linear equality:</p>
+            <div class="eq">\[ \mathrm{supp}(d) \subseteq \mathrm{supp}(d_{\mathrm{S}}) \;\Longleftrightarrow\; \sum_{s,a} \mathbb{1}_{d_{\mathrm{S}}}(s,a)\, d(s,a) = 1 , \]</div>
+            <p>where \(\mathbb{1}_{d_{\mathrm{S}}}\) is the indicator of \(\mathrm{supp}(d_{\mathrm{S}})\). Adding the Bellman flow constraints gives</p>
+            <div class="eq">\[ \begin{aligned} \min_{d \ge 0} \;\; & D_{\mathrm{KL}}(d \,\|\, d_{\mathrm{P}}) \\ \text{s.t.} \;\; & \sum_{s,a} \mathbb{1}_{d_{\mathrm{S}}}(s,a)\, d(s,a) = 1, \\ & (\mathcal{B}_* d)(s) = (1-\gamma)\,\rho_0(s) + \gamma\,(\mathcal{T}_* d)(s) \quad \forall s . \end{aligned} \]</div>
+            <p>With multipliers \(\lambda\) (support) and \(\nu(s)\) (Bellman flow), the correction ratio \(w\), and \(r_{\mathrm{P}} := d_{\mathrm{P}}/d_{\mathrm{U}}\), the Lagrangian involves only expectations over \(d_{\mathrm{U}}\):</p>
+            <div class="eq">\[ L(w,\nu,\lambda) = (1-\gamma)\,\mathbb{E}_{s\sim\rho_0}[\nu(s)] - \lambda + \mathbb{E}_{(s,a)\sim d_{\mathrm{U}}}\big[\, w(s,a)\,\big(A_{\nu,\lambda}(s,a) - \log w(s,a)\big) \big], \]</div>
+            <div class="eq">\[ A_{\nu,\lambda}(s,a) := \underbrace{\gamma\,(\mathcal{T}\nu)(s,a) - \nu(s)}_{\text{temporal difference}} + \underbrace{\log r_{\mathrm{P}}(s,a)}_{\text{performance proxy}} + \underbrace{\lambda\, \mathbb{1}_{d_{\mathrm{S}}}(s,a)}_{\text{safe support}} . \]</div>
+            <p>The maximization over \(w\) has a closed form, leaving a minimization over \(\nu\) and \(\lambda\):</p>
+            <div class="eq">\[ w^*_{\nu,\lambda}(s,a) = \exp\!\big(A_{\nu,\lambda}(s,a) - 1\big), \]</div>
+            <div class="eq">\[ \min_{\nu,\lambda}\; \mathbb{E}_{(s,a)\sim d_{\mathrm{U}}}\big[\exp\!\big(A_{\nu,\lambda}(s,a) - 1\big)\big] + (1-\gamma)\,\mathbb{E}_{s\sim\rho_0}[\nu(s)] - \lambda . \]</div>
+            <p class="method-note"><strong>Intuition:</strong> The term \(\lambda\,\mathbb{1}_{d_{\mathrm{S}}}\) up-weights \(w^*\) inside \(\mathrm{supp}(d_{\mathrm{S}})\) by a factor \(e^{\lambda}\), and \(\log r_{\mathrm{P}}\) steers it toward performant behavior. The policy is extracted from \(w^*\) by weighted behavioral cloning.</p>
+
+            <h3>Estimating the safe support without unsafe labels</h3>
+            <p>The unsafe distribution \(d_{\mathrm{N}}\) is never observed, so DexDICE trains a safe-vs-unlabeled discriminator \(\hat r_{\mathrm{S}} \approx d_{\mathrm{S}}/d_{\mathrm{U}}\). Writing \(d_{\mathrm{U}} = \eta\, d_{\mathrm{S}} + (1-\eta)\, d_{\mathrm{N}}\) with class prior \(\eta\) gives</p>
+            <div class="eq">\[ \frac{d_{\mathrm{N}}(s,a)}{d_{\mathrm{S}}(s,a)} = \frac{1}{1-\eta}\,\frac{d_{\mathrm{U}}(s,a)}{d_{\mathrm{S}}(s,a)} - \frac{\eta}{1-\eta} . \]</div>
+            <p>The two ratios are monotonically related, so \(\hat r_{\mathrm{S}}\) ranks pairs in the same order as the safe-vs-unsafe ratio (<em>rank consistency</em>) and can be thresholded without estimating \(\eta\). The threshold is set by a target false-negative rate \(\kappa\):</p>
+            <div class="eq">\[ \tau_\kappa := \mathrm{Quantile}_\kappa\big(\{\hat r_{\mathrm{S}}(s,a) : (s,a)\in\mathcal{D}_{\mathrm{S}}\}\big), \qquad \hat{\mathbb{1}}_{d_{\mathrm{S}}}(s,a) := \mathbb{1}\big\{\hat r_{\mathrm{S}}(s,a) \ge \tau_\kappa\big\} . \]</div>
+            <p class="method-note">Fewer than a \(\kappa\) fraction of safe demonstration pairs are rejected. All benchmark results use \(\kappa = 0.01\).</p>
+            <div class="method-diagrams">
+              <figure class="method-diagram">
+                <figcaption>Pipeline summary</figcaption>
+                <ol class="diagram-flow">
+                  <li><strong>Discriminators</strong><span>\(\hat r_{\mathrm{S}} \approx d_{\mathrm{S}}/d_{\mathrm{U}}\), \(\hat r_{\mathrm{P}} \approx d_{\mathrm{P}}/d_{\mathrm{U}}\)</span></li>
+                  <li><strong>\(\kappa\)-quantile Cutoff</strong><span>Estimated safe support \(\hat{\mathbb{1}}_{d_{\mathrm{S}}}\)</span></li>
+                  <li><strong>DICE Correction</strong><span>Optimize \(\nu, \lambda\) to obtain \(w^*\)</span></li>
+                  <li><strong>Policy Extraction</strong><span>Weighted BC</span></li>
+                </ol>
+              </figure>
+            </div>
+
+            <h3>Key theoretical result</h3>
+            <p>Under some assumptions, if \(\kappa\) exceeds the boundary mass \(\kappa_0\) by a finite-sample margin, \(\kappa > \kappa_0 + O(|\mathcal{D}_{\mathrm{S}}|^{-1/2})\), the ideal support-constrained policy \(\pi_\kappa\) avoids the reachable unsafe region \(\mathbf{N}\):</p>
+            <figure class="math-figure math-figure-theorem">
+              <div class="eq">\[ d^{\pi_\kappa}(\mathbf{N}) = 0 \quad \text{with probability at least } 1-\delta . \]</div>
+            </figure>
+            <p class="method-note">This guarantee holds for the ideal policy whose support lies entirely within the estimated safe support.</p>
+          </div>
+        </div>
+      </section>
+
+      <section class="section container" id="experiments" aria-labelledby="experiments-title">
+        <h2 id="experiments-title">Experiments</h2>
+        <h3>DSRL Benchmark: Re-curated to Dual-Expert IL Setting</h3>
+        <p>With a single fixed \(\kappa\) = 0.01 across all 38 tasks, DexDICE has the highest group-mean return among methods whose group-mean cost satisfies the constraint. It is safe on 31 tasks and has the best safe return on 19, including ties within one standard error.</p>
+        <div class="table-scroll">
+          <table class="dsrl-table">
+            <caption>Group-wise results on the re-curated DSRL benchmark</caption>
+            <thead><tr><th scope="col">Task group</th><th scope="col">DexDICE return</th><th scope="col">Best group-safe baseline</th><th scope="col">DexDICE cost</th><th scope="col">Safe tasks</th></tr></thead>
+            <tbody>
+              <tr><th scope="row">Safety Gymnasium</th><td class="emphasis">0.37</td><td>0.27 <small>DemoDICE-S</small></td><td>0.71</td><td>17/21</td></tr>
+              <tr><th scope="row">Bullet Safety Gym</th><td class="emphasis">0.59</td><td>0.44 <small>FBC, CDT</small></td><td>0.63</td><td>7/8</td></tr>
+              <tr><th scope="row">MetaDrive</th><td class="emphasis">0.50</td><td>0.33 <small>DemoDICE-S</small></td><td>0.69</td><td>7/9</td></tr>
+            </tbody>
+          </table>
+        </div>
+        <p class="note">Return and cost are normalized group means (safe when cost ≤ 1). “Best group-safe baseline” is the highest-return baseline among those satisfying that group-mean cost threshold. Safe-task counts use each task's cost constraint.</p>
+
+        <figure class="bar-chart" aria-labelledby="best-safe-title">
+          <figcaption id="best-safe-title">Tasks with the best safe return (out of 38)</figcaption>
+          <ul>
+            <li class="bar-ours" tabindex="0"><span class="bar-label">DexDICE</span><span class="bar-track"><span class="bar" style="width:100.00%"></span><span class="bar-value">19</span></span><span class="bar-tip" role="tooltip"><span class="tip-group"><b>Safety Gymnasium (9)</b> PointButton1, PointButton2, PointCircle1, PointGoal2, CarButton1, CarButton2, CarPush2, Walker2dVelocity, AntVelocity</span><span class="tip-group"><b>Bullet Safety Gym (5)</b> BallRun, AntRun, CarCircle, DroneCircle, AntCircle</span><span class="tip-group"><b>MetaDrive (5)</b> easymean, easydense, mediummean, mediumdense, hardsparse</span></span></li>
+            <li tabindex="0"><span class="bar-label">DemoDICE-S</span><span class="bar-track"><span class="bar" style="width:47.37%"></span><span class="bar-value">9</span></span><span class="bar-tip" role="tooltip"><span class="tip-group"><b>Safety Gymnasium (4)</b> PointCircle1, PointCircle2, CarButton1, AntVelocity</span><span class="tip-group"><b>MetaDrive (5)</b> easydense, mediumsparse, mediummean, hardsparse, hardmean</span></span></li>
+            <li tabindex="0"><span class="bar-label">TraC</span><span class="bar-track"><span class="bar" style="width:47.37%"></span><span class="bar-value">9</span></span><span class="bar-tip" role="tooltip"><span class="tip-group"><b>Safety Gymnasium (3)</b> HopperVelocity, HalfCheetahVelocity, Walker2dVelocity</span><span class="tip-group"><b>Bullet Safety Gym (3)</b> BallRun, CarRun, DroneRun</span><span class="tip-group"><b>MetaDrive (3)</b> mediumsparse, mediummean, hardsparse</span></span></li>
+            <li tabindex="0"><span class="bar-label">CDT</span><span class="bar-track"><span class="bar" style="width:42.11%"></span><span class="bar-value">8</span></span><span class="bar-tip" role="tooltip"><span class="tip-group"><b>Safety Gymnasium (2)</b> PointGoal2, CarGoal1</span><span class="tip-group"><b>Bullet Safety Gym (2)</b> BallRun, DroneRun</span><span class="tip-group"><b>MetaDrive (4)</b> easysparse, easymean, mediumsparse, mediummean</span></span></li>
+            <li tabindex="0"><span class="bar-label">FBC</span><span class="bar-track"><span class="bar" style="width:26.32%"></span><span class="bar-value">5</span></span><span class="bar-tip" role="tooltip"><span class="tip-group"><b>Safety Gymnasium (1)</b> HopperVelocity</span><span class="tip-group"><b>Bullet Safety Gym (2)</b> CarRun, BallCircle</span><span class="tip-group"><b>MetaDrive (2)</b> easysparse, hardsparse</span></span></li>
+            <li tabindex="0"><span class="bar-label">DemoDICE-U</span><span class="bar-track"><span class="bar" style="width:26.32%"></span><span class="bar-value">5</span></span><span class="bar-tip" role="tooltip"><span class="tip-group"><b>Safety Gymnasium (5)</b> PointButton1, PointPush1, PointPush2, CarGoal1, CarGoal2</span></span></li>
+            <li tabindex="0"><span class="bar-label">FISOR-IL</span><span class="bar-track"><span class="bar" style="width:21.05%"></span><span class="bar-value">4</span></span><span class="bar-tip" role="tooltip"><span class="tip-group"><b>Safety Gymnasium (3)</b> PointGoal1, PointPush1, CarPush1</span><span class="tip-group"><b>Bullet Safety Gym (1)</b> CarRun</span></span></li>
+            <li tabindex="0"><span class="bar-label">DWBC-S</span><span class="bar-track"><span class="bar" style="width:15.79%"></span><span class="bar-value">3</span></span><span class="bar-tip" role="tooltip"><span class="tip-group"><b>Safety Gymnasium (2)</b> CarGoal1, SwimmerVelocity</span><span class="tip-group"><b>Bullet Safety Gym (1)</b> CarRun</span></span></li>
+            <li tabindex="0"><span class="bar-label">JFBC</span><span class="bar-track"><span class="bar" style="width:15.79%"></span><span class="bar-value">3</span></span><span class="bar-tip" role="tooltip"><span class="tip-group"><b>Safety Gymnasium (1)</b> CarPush1</span><span class="tip-group"><b>Bullet Safety Gym (1)</b> CarRun</span></span></li>
+            <li tabindex="0"><span class="bar-label">BC</span><span class="bar-track"><span class="bar" style="width:5.26%"></span><span class="bar-value">1</span></span><span class="bar-tip" role="tooltip"><span class="tip-group"><b>MetaDrive (1)</b> harddense</span></span></li>
+          </ul>
+          <p class="note">Safe: mean normalized cost within the threshold (cost ≤ 1). Best: highest return among safe methods on a task, including ties within one standard error. Hover over or tap a bar to list the tasks.</p>
+        </figure>
+
+        <h3>Controlled Experiments: Robustness to Data Quantity and Quality</h3>
+        <p>On six Safety Gymnasium tasks, we vary the number of safe or performant demonstrations and the fraction of safe-high demonstrations in each set. Each plot shows average return against average cost; the green region satisfies the cost constraint, and red points are DexDICE.</p>
+        <div class="plot-grid">
+          <figure class="plot"><a href="assets/images/controlled-safe-data-efficiency.png" target="_blank" rel="noopener"><img src="assets/images/controlled-safe-data-efficiency.png" alt="Average return versus cost as the number of safe demonstrations varies." width="1400" height="980" loading="lazy" /></a><figcaption>Varying the number of safe demonstrations</figcaption></figure>
+          <figure class="plot"><a href="assets/images/controlled-performant-data-efficiency.png" target="_blank" rel="noopener"><img src="assets/images/controlled-performant-data-efficiency.png" alt="Average return versus cost as the number of performant demonstrations varies." width="1400" height="980" loading="lazy" /></a><figcaption>Varying the number of performant demonstrations</figcaption></figure>
+          <figure class="plot"><a href="assets/images/controlled-safe-data-quality.png" target="_blank" rel="noopener"><img src="assets/images/controlled-safe-data-quality.png" alt="Average return versus cost as safe-demonstration quality varies." width="1400" height="980" loading="lazy" /></a><figcaption>Varying safe-demonstration quality</figcaption></figure>
+          <figure class="plot"><a href="assets/images/controlled-performant-data-quality.png" target="_blank" rel="noopener"><img src="assets/images/controlled-performant-data-quality.png" alt="Average return versus cost as performant-demonstration quality varies." width="1400" height="980" loading="lazy" /></a><figcaption>Varying performant-demonstration quality</figcaption></figure>
+        </div>
+        <p class="note">DexDICE generally maintains safety and the highest return among safe methods. Performance weakens with only two safe trajectories or at very low performant-set quality. Select a plot to open it at full size.</p>
+
+        <h3>Real-world Mobile-robot Navigation</h3>
+        <p>Policies were trained from human teleoperation data and evaluated over ten physical trials per method. DexDICE reached the goal in all ten trials with no measured unsafe-distance time steps.</p>
+        <figure class="figure arena">
+          <img src="assets/images/robot-arena.jpg" alt="Top-down illustration of the mobile-robot arena, showing the start, goal, and two obstacles." width="1200" height="474" loading="lazy" />
+          <figcaption>Mobile-robot navigation arena from the paper.</figcaption>
+        </figure>
+        <div class="table-scroll">
+          <table>
+            <caption>Real-robot results, evaluated on 10 trials per method</caption>
+            <thead><tr><th scope="col">Method</th><th scope="col">Success</th><th scope="col">Time to goal</th><th scope="col">Violation rate</th></tr></thead>
+            <tbody>
+              <tr class="ours"><th scope="row">DexDICE</th><td>10/10</td><td>16.9 s</td><td>0.00%</td></tr>
+              <tr><th scope="row">DemoDICE-U</th><td>8/10</td><td>15.9 s</td><td>0.69%</td></tr>
+              <tr><th scope="row">BC-Safe</th><td>8/10</td><td>36.0 s</td><td>3.81%</td></tr>
+              <tr><th scope="row">FISOR-IL</th><td>8/10</td><td>16.9 s</td><td>4.89%</td></tr>
+              <tr><th scope="row">FBC</th><td>6/10</td><td>15.8 s</td><td>6.38%</td></tr>
+            </tbody>
+          </table>
+        </div>
+        <p class="note">Success means reaching the goal without collision. Time to goal is measured on successful trials. Violation rate is the fraction of time steps within the LiDAR-based unsafe-distance threshold.</p>
+      </section>
+
+      <section class="section section-soft" id="videos" aria-labelledby="videos-title">
+        <div class="container">
+          <h2 id="videos-title">Robot experiment videos</h2>
+          <!-- <p>Selected trials from the physical evaluation. Trial-level outcomes can differ from the aggregate results in the table.</p> -->
+          <figure class="featured-video video-item"><video controls playsinline preload="metadata" poster="assets/images/poster-dexdice.png" aria-label="DexDICE selected real-robot navigation trial"><source src="assets/videos/dexdice.mp4" type="video/mp4" />Your browser does not support embedded video.</video><figcaption>DexDICE (ours)</figcaption></figure>
+          <div class="video-grid">
+            <figure class="video-item"><video controls playsinline preload="none" poster="assets/images/poster-demodice-u.png" aria-label="DemoDICE-U selected robot trial"><source src="assets/videos/demodice-u.mp4" type="video/mp4" /></video><figcaption>DemoDICE-U</figcaption></figure>
+            <figure class="video-item"><video controls playsinline preload="none" poster="assets/images/poster-bc-safe.png" aria-label="BC-Safe selected robot trial"><source src="assets/videos/bc-safe.mp4" type="video/mp4" /></video><figcaption>BC-Safe</figcaption></figure>
+            <figure class="video-item"><video controls playsinline preload="none" poster="assets/images/poster-fisor-il.png" aria-label="FISOR-IL selected robot trial"><source src="assets/videos/fisor-il.mp4" type="video/mp4" /></video><figcaption>FISOR-IL</figcaption></figure>
+            <figure class="video-item"><video controls playsinline preload="none" poster="assets/images/poster-fbc.png" aria-label="FBC selected robot trial"><source src="assets/videos/fbc.mp4" type="video/mp4" /></video><figcaption>FBC</figcaption></figure>
+          </div>
+        </div>
+      </section>
+
+      <section class="section container" id="takeaways" aria-labelledby="takeaways-title">
+        <h2 id="takeaways-title">Takeaways</h2>
+        <ol class="takeaways">
+          <li><strong>Support, not distribution.</strong> Safe demonstrations constrain where the policy acts, and performant demonstrations determine what it does there. This avoids inheriting the suboptimality of the safe expert.</li>
+          <li><strong>No unsafe labels, one knob.</strong> A safe-vs-unlabeled discriminator and a single quantile level \(\kappa\) estimate the safe support without cost labels or a class prior.</li>
+          <li><strong>Safe and performant in practice.</strong> With a fixed \(\kappa = 0.01\), DexDICE satisfies the cost constraint on 31 of 38 DSRL tasks, and on a physical mobile robot it reaches the goal in 10 of 10 trials with a 0.00% violation rate.</li>
+        </ol>
+      </section>
+
+      <section class="section container citation" id="citation" aria-labelledby="citation-title">
+        <h2 id="citation-title">BibTeX</h2>
+        <pre><code>@inproceedings{seo2026dexdice,
+  title     = {DexDICE: Reconciling Safety and Performance via Dual-Expert Offline Imitation Learning},
+  author    = {Seo, Seokin and Shyn, Sung Kuk and Seo, Minji and Lee, Yisoo and Lee, Jongmin and Yang, Hongseok and Kim, Kee-Eung},
+  booktitle = {Advances in Neural Information Processing Systems},
+  year      = {2026}
+}</code></pre>
+      </section>
+    </main>
+
+    <footer class="footer"><div class="container"><span>DexDICE · NeurIPS 2026</span><a href="#top">Back to top ↑</a></div></footer>
+  </body>
+</html>

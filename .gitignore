@@ -1,0 +1,7 @@
+.DS_Store
+__*.html
+# Not referenced by index.html (kept locally only)
+assets/dexdice-neurips-2026.pdf
+assets/images/support-objective-min.svg
+assets/images/support-objective-constraint.svg
+assets/images/safety-theorem.svg
