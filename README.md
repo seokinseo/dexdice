@@ -14,7 +14,7 @@ Open `http://localhost:8000/`. The videos work without a build step.
 
 ## Publish to GitHub Pages
 
-Published at https://seokinseo.github.io/dexdice-site/ from the `seokinseo/dexdice-site` repository (GitHub Pages, `main` branch, root).
+Published at https://seokinseo.github.io/dexdice/ from the `seokinseo/dexdice` repository (GitHub Pages, `main` branch, root).
 
 For a standalone `<username>.github.io` repository, copy the contents of this folder into that repository's root, then enable Pages from the default branch. For an existing repository that keeps this `site/` folder, use a GitHub Actions Pages workflow that uploads `./site` as the artifact. GitHub Pages' branch-based source setting only accepts the repository root or `/docs`.
 
