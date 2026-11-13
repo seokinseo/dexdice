@@ -141,6 +141,10 @@ tbody th { font-weight: 500; }
 .vc-btn { min-width: 76px; min-height: 34px; padding: 4px 14px; border: 1px solid var(--line); border-radius: 999px; background: var(--bg); color: var(--text); font: 600 13px Inter, system-ui, sans-serif; cursor: pointer; }
 .vc-btn:hover { border-color: var(--accent); color: var(--accent); }
 .vc-btn:focus-visible { outline: 3px solid var(--accent); outline-offset: 2px; }
+.vc-timeline { display: flex; flex: 1 1 320px; align-items: center; gap: 10px; max-width: 560px; min-width: 220px; }
+.vc-timeline input[type=range] { flex: 1; min-width: 0; height: 24px; margin: 0; accent-color: var(--accent); cursor: pointer; }
+.vc-timeline input[type=range]:disabled { cursor: default; opacity: .5; }
+.vc-time { flex: none; min-width: 74px; color: var(--muted); font: 500 12px Inter, system-ui, sans-serif; font-variant-numeric: tabular-nums; text-align: right; }
 .vc-note { flex-basis: 100%; color: var(--muted); font-size: 12px; text-align: center; }
 .sync-video { cursor: pointer; }
 .video-grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 26px 22px; margin-top: 28px; }

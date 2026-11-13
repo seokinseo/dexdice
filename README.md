@@ -27,7 +27,7 @@ The page uses relative paths, so it works at either a user-site root or a projec
 - `assets/videos/*.mp4`: compressed, representative clips from the five method folders under `mobile_video`; the page labels them as selected trials. The quantitative results summarize all ten trials per method.
 - `assets/images/poster-*.png`: still frames for those clips.
 
-The raw videos remain outside this folder. Each clip is trimmed from just before departure to just after arrival, encoded at 1080p (H.264, HDR converted to SDR with avconvert), and the five clips total about 27 MB. On the page, all clips start together when the section scrolls into view and restart together 1 s after the longest clip ends.
+The raw videos remain outside this folder. Each clip is trimmed from just before departure to just after arrival, encoded at 1080p (H.264, HDR converted to SDR with avconvert, one keyframe per second so that seeking stays responsive), and the five clips total about 40 MB. On the page, all clips share one timeline: they start together when the section scrolls into view, the seek bar moves all clips to the same time (shorter clips hold their final frame), and playback restarts 1 s after the longest clip ends.
 
 | Clip | Source (`mobile_video/`) | Trim window (s) |
 |---|---|---|

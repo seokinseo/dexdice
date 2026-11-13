@@ -198,7 +198,11 @@
           <div class="video-controls">
             <button type="button" class="vc-btn" id="vc-toggle" aria-pressed="false">Play</button>
             <button type="button" class="vc-btn" id="vc-restart">Restart</button>
-            <span class="vc-note">All clips start at departure and play together. They restart after the longest clip ends.</span>
+            <div class="vc-timeline">
+              <input type="range" id="vc-seek" min="0" max="1" step="0.05" value="0" aria-label="Seek all clips" disabled />
+              <span class="vc-time" id="vc-time">0:00 / 0:00</span>
+            </div>
+            <span class="vc-note">All clips start at departure and share one timeline. Shorter clips hold their final frame, and playback restarts after the longest clip ends.</span>
           </div>
           <figure class="featured-video video-item"><video class="sync-video" muted playsinline preload="metadata" poster="assets/images/poster-dexdice.jpg" aria-label="DexDICE selected real-robot navigation trial"><source src="assets/videos/dexdice.mp4" type="video/mp4" />Your browser does not support embedded video.</video><figcaption>DexDICE (ours)</figcaption></figure>
           <div class="video-grid">
@@ -237,43 +241,110 @@
         var videos = Array.prototype.slice.call(document.querySelectorAll('.sync-video'));
         var toggle = document.getElementById('vc-toggle');
         var restartBtn = document.getElementById('vc-restart');
+        var seek = document.getElementById('vc-seek');
+        var timeLabel = document.getElementById('vc-time');
         if (!section || !videos.length) return;
         var reduceMotion = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
-        var userPaused = reduceMotion, inView = false, playing = false, loopTimer = null;
+        var userPaused = reduceMotion, inView = false, playing = false, scrubbing = false, resumeAfterScrub = false;
+        var master = null, total = 0, loopTimer = null, raf = 0, seekRaf = 0, pendingT = 0, gen = 0;
 
+        function fmt(t) { t = Math.max(0, Math.floor(t)); return Math.floor(t / 60) + ':' + ('0' + (t % 60)).slice(-2); }
+        function now() { return master ? master.currentTime : 0; }
+        function render() {
+          var t = now();
+          if (!scrubbing) seek.value = t;
+          timeLabel.textContent = fmt(scrubbing ? +seek.value : t) + ' / ' + fmt(total);
+        }
         function setLabel() { toggle.textContent = playing ? 'Pause' : 'Play'; toggle.setAttribute('aria-pressed', playing ? 'true' : 'false'); }
+        function initTimeline() {
+          if (master || !videos.every(function (v) { return v.readyState >= 1 && isFinite(v.duration); })) return;
+          master = videos.reduce(function (a, b) { return b.duration > a.duration ? b : a; });
+          total = master.duration;
+          seek.max = total; seek.disabled = false;
+          master.addEventListener('ended', onMasterEnded);
+          render();
+        }
         function ready(v) {
           return v.readyState >= 3 ? Promise.resolve() : new Promise(function (res) {
             v.addEventListener('canplay', res, { once: true }); if (v.preload !== 'auto') { v.preload = 'auto'; v.load(); }
           });
         }
+        function seekAll(t) {
+          t = Math.max(0, Math.min(t, total));
+          videos.forEach(function (v) {
+            var target = Math.min(t, v.duration);
+            if (Math.abs(v.currentTime - target) > 0.02) v.currentTime = target;
+          });
+        }
+        function loop() {
+          render();
+          var t = now();
+          videos.forEach(function (v) {
+            if (v !== master && !v.paused && !v.seeking && t < v.duration && Math.abs(v.currentTime - t) > 0.25) v.currentTime = t;
+          });
+          if (playing) raf = requestAnimationFrame(loop);
+        }
         function playAll(fromStart) {
+          var my = ++gen, startT = fromStart ? 0 : now();
           clearTimeout(loopTimer);
           return Promise.all(videos.map(ready)).then(function () {
-            videos.forEach(function (v) { if (fromStart || v.ended) v.currentTime = 0; });
-            return Promise.all(videos.map(function (v) { return v.play(); }));
-          }).then(function () { playing = true; setLabel(); })
-            .catch(function () { playing = false; userPaused = true; setLabel(); });
+            if (my !== gen) return;
+            initTimeline();
+            seekAll(startT >= total - 0.05 ? 0 : startT);
+            return Promise.all(videos.filter(function (v) { return v.currentTime < v.duration - 0.05; })
+              .map(function (v) { return v.play(); })).then(function () {
+                if (my !== gen) return;
+                playing = true; setLabel(); cancelAnimationFrame(raf); loop();
+              });
+          }).catch(function (e) {
+            if (my !== gen) return;
+            playing = false; if (e && e.name === 'NotAllowedError') userPaused = true; setLabel();
+          });
         }
-        function pauseAll() { clearTimeout(loopTimer); videos.forEach(function (v) { v.pause(); }); playing = false; setLabel(); }
+        function pauseAll() {
+          gen++; clearTimeout(loopTimer); cancelAnimationFrame(raf);
+          videos.forEach(function (v) { v.pause(); });
+          playing = false; setLabel(); render();
+        }
+        function onMasterEnded() {
+          render();
+          loopTimer = setTimeout(function () { if (playing && inView && !userPaused) playAll(true); }, 1000);
+        }
+
+        function startScrub() {
+          if (scrubbing) return;
+          scrubbing = true; resumeAfterScrub = playing;
+          if (playing) pauseAll();
+        }
+        function endScrub() {
+          if (!scrubbing) return;
+          scrubbing = false; cancelAnimationFrame(seekRaf); seekRaf = 0;
+          seekAll(+seek.value); render();
+          if (resumeAfterScrub && !userPaused) playAll(false);
+        }
+        seek.addEventListener('pointerdown', startScrub);
+        seek.addEventListener('input', function () {
+          startScrub(); pendingT = +seek.value; render();
+          if (!seekRaf) seekRaf = requestAnimationFrame(function () { seekRaf = 0; seekAll(pendingT); });
+        });
+        seek.addEventListener('pointerup', endScrub);
+        seek.addEventListener('pointercancel', endScrub);
+        seek.addEventListener('change', endScrub);
 
         videos.forEach(function (v) {
-          v.addEventListener('ended', function () {
-            if (videos.every(function (x) { return x.ended; })) {
-              loopTimer = setTimeout(function () { if (inView && !userPaused) playAll(true); }, 1000);
-            }
-          });
+          v.addEventListener('loadedmetadata', initTimeline);
           v.addEventListener('click', function () { toggle.click(); });
         });
+        initTimeline();
         toggle.addEventListener('click', function () {
-          if (playing) { userPaused = true; pauseAll(); } else { userPaused = false; playAll(videos.every(function (x) { return x.ended; })); }
+          if (playing) { userPaused = true; pauseAll(); } else { userPaused = false; playAll(false); }
         });
         restartBtn.addEventListener('click', function () { userPaused = false; playAll(true); });
 
         if ('IntersectionObserver' in window) {
           new IntersectionObserver(function (entries) {
             inView = entries[0].isIntersecting;
-            if (inView && !userPaused && !playing) playAll(false);
+            if (inView && !userPaused && !playing && !scrubbing) playAll(false);
             else if (!inView && playing) pauseAll();
           }, { threshold: 0.25 }).observe(section);
         }
