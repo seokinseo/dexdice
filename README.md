@@ -32,7 +32,7 @@ The raw videos remain outside this folder. Each clip is trimmed from just before
 | Clip | Source (`mobile_video/`) | Trim window (s) |
 |---|---|---|
 | dexdice.mp4 | DexDICE/IMG_1013.MOV | 3.6 to 19.8 |
-| demodice-u.mp4 | DemoDICE-U/IMG_1029.MOV | 1.5 to 18.2 |
+| demodice-u.mp4 | DemoDICE-U/IMG_1026.MOV | 1.5 to 18.0 |
 | bc-safe.mp4 | BC-Safe/IMG_1054.MOV | 3.0 to 35.2 |
 | fisor-il.mp4 | FISOR-IL/IMG_1039.MOV | 4.7 to 22.1 |
 | fbc.mp4 | FBC/IMG_1047.MOV | 1.4 to 16.1 |
